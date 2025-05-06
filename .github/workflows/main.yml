@@ -1,0 +1,41 @@
+name: AWS Lambda Deploy 
+on:
+  push:
+    branches:
+      - main
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: ${{ secrets.AWS_REGION }}
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          role-session-name: GitHubActions
+
+      - name: get-caller-identity is allowed to run on role.
+        run: aws sts get-caller-identity
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Install dependencies
+        run: |
+          cd lambda
+          pip install -r requirements.txt -t .
+
+      - name: Deploy to AWS Lambda
+        run: |
+          cd lambda && zip -r package.zip ./*
+          aws lambda update-function-code \
+          --function-name FUNCTIONNAME --zip-file fileb://package.zip --publish
