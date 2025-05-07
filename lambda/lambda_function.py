@@ -6,7 +6,7 @@ def lambda_handler(event, context):
     Lambda関数のエントリーポイント
     """
     print("イベントを受信しました:", event)
-    print("he3")
+    print("he4")
 
     response = {
         'statusCode': 200,
