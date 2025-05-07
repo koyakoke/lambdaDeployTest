@@ -38,6 +38,6 @@ jobs:
         run: |
           cd lambda && zip -r package.zip ./*
           aws lambda update-function-code \
-          --function-name FUNCTIONNAME --zip-file fileb://package.zip --publish
+          --function-name test --zip-file fileb://package.zip --publish
 
 
